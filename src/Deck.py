@@ -15,6 +15,6 @@ class Deck():
         '''
         Draws a card from the deck at random and turns into black card, as per instructions
         '''
-        first_card = Card.Card()
-        first_card.color = 'black'
+        first_card = self.draw_card()
+        first_card.color = 1
         return first_card

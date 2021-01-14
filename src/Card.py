@@ -14,5 +14,7 @@ class Card():
     def initialize_color(self):
         '''
         Returns the color of our card with p(red) = 1/3, p(black) = 2/3.
+        - Red: -1
+        - Black: 1
         '''
-        return 'red' if np.random.rand() <= 0.333333333334 else 'black'
+        return -1 if np.random.rand() <= 0.333333333334 else 1
