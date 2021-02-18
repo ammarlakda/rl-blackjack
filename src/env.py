@@ -1,4 +1,6 @@
-import Card
+from src.Card import Card 
+# import Card
+import copy
 
 class BlackjackEnv():
     def __init__(self):
@@ -15,7 +17,7 @@ class BlackjackEnv():
         Returns:
         - value (int): total value to add to score
         '''
-        card = Card.Card()
+        card = Card()
         value = card.color * card.number
 
         # If this is the first card and the color is red (negative), then make it black (positive)
@@ -25,35 +27,46 @@ class BlackjackEnv():
         return value
 
 
-    def step(self, state, action, agent=True):
+    def step(self, state, action):
         '''     
         Given a state and action, returns the reward for that action along with a sample of the next state
 
         Args:
         - state (list): state in the form [dealer card, player sum]
         - action (int): action to take (either  0 (stick): don't draw a card, or 1 (hit): draw a card)
-        - agent=True (bool): specifies if agent is the one taking action
         Returns:
         - next_state: sample of the next state of the environment after the current action is taken
         - reward: value gained from performing action in the environment
         '''
         reward = 0
+        dealer_sum = state[0]
 
         # Perform action
-        if action == 1:
-            if agent:
-                next_state = state[1] + self.draw()
-            else:
-                next_state = state[0] + self.draw()
+        next_state = copy.deepcopy(state)
+        if action == 0: # hit
+            next_state[1] = state[1] + self.draw()
+        elif action == 1: # stick
+            while 0 <= dealer_sum < 17:
+                dealer_sum += self.draw()
 
         # Calculate reward
-        if state == next_state or any(next_state > 21) or any(next_state < 0): # terminal states
-            if next_state[1] > next_state[0] and next_state[1] in range(0, 22): # win
-                reward = 1
-            elif next_state[0] == next_state[1]: # tie
+        sums = [next_state[1], dealer_sum]
+        if min(sums) < 0 or max(sums) >= 21 or action == 1: # terminal states - bust or stick
+            if next_state[1] == dealer_sum: # tie
                 reward = 0
-            else:
-                reward = -1
+            elif next_state[1] in range(0,22) and dealer_sum in range(0,22): # both non-bust
+                if next_state[1] > dealer_sum: # agent > dealer
+                    reward = 1
+                else: # dealer > agent
+                    reward = -1
+            else: # one bust
+                if next_state[1] in range(0,22) and dealer_sum not in range(0,22):
+                    reward = 1
+                elif dealer_sum in range(0,22) and next_state[1] not in range(0,22):
+                    reward = -1
+                else:
+                    raise ValueError('Aw we fucked up')
+        else: # still in game
+            reward = 0
 
-        return state, reward
-## Note: set prev state before calling step. if state_prev[1] == state[1], start 
+        return next_state, reward
