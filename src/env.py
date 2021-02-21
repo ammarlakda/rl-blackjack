@@ -37,21 +37,23 @@ class BlackjackEnv():
         Returns:
         - next_state: sample of the next state of the environment after the current action is taken
         - reward: value gained from performing action in the environment
+        - terminal: flag specifying if terminal state has been reached (for sarsa evaluation)
         '''
         reward = 0
         dealer_sum = state[0]
+        terminal = False
 
         # Perform action
         next_state = copy.deepcopy(state)
         if action == 0: # hit
-            next_state[1] = state[1] + self.draw()
+            next_state[1] += self.draw()
         elif action == 1: # stick
             while 0 <= dealer_sum < 17:
                 dealer_sum += self.draw()
 
         # Calculate reward
         sums = [next_state[1], dealer_sum]
-        if min(sums) < 0 or max(sums) >= 21 or action == 1: # terminal states - bust or stick
+        if min(sums) < 0 or max(sums) >= 21 or action == 1: # terminal states - bust/win or stick
             if next_state[1] == dealer_sum: # tie
                 reward = 0
             elif next_state[1] in range(0,22) and dealer_sum in range(0,22): # both non-bust
@@ -65,8 +67,10 @@ class BlackjackEnv():
                 elif dealer_sum in range(0,22) and next_state[1] not in range(0,22):
                     reward = -1
                 else:
-                    raise ValueError('Aw we fucked up')
+                    raise ValueError('Unaccounted reward state')
+            terminal = True
+            next_state = [0,0]
         else: # still in game
             reward = 0
 
-        return next_state, reward
+        return next_state, reward, terminal
