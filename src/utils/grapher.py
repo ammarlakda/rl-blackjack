@@ -45,7 +45,7 @@ def grapher3d(Z, title=None, save_file=None):
     - save_file (str): file to save image to
     '''
     x = np.linspace(0,10,10)
-    y = np.linspace(0,21, 21)
+    y = np.linspace(0,22, 22)
     X, Y = np.meshgrid(x, y) 
 
     fig = plt.figure() 

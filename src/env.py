@@ -53,7 +53,7 @@ class BlackjackEnv():
 
         # Calculate reward
         sums = [next_state[1], dealer_sum]
-        if min(sums) < 0 or max(sums) >= 21 or action == 1: # terminal states - bust/win or stick
+        if min(sums) < 0 or max(sums) > 21 or action == 1: # terminal states - bust/win or stick
             if next_state[1] == dealer_sum: # tie
                 reward = 0
             elif next_state[1] in range(0,22) and dealer_sum in range(0,22): # both non-bust

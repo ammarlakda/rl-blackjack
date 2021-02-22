@@ -20,7 +20,7 @@ def check_Q(Q):
                     file.write('({}, {}, {}): {} \n'.format(s0 + 1, s1, a, Q[s0, s1, a]))
 
 if __name__ == '__main__':
-    mc_epoch = 10000000
+    mc_epoch = 1000000
     td_epoch = mc_epoch
     agent = agent.Agent()
 
@@ -30,10 +30,11 @@ if __name__ == '__main__':
     Q_td, mses = agent.sarsa(td_epoch, Q_mc)
 
     # Print 3D value function graph
-    grapher3d(V_prime[1:,:-1].T, title='MC V_Prime ({} epochs)'.format(mc_epoch), save_file='3Dplot.png')
+    grapher3d(V_prime[1:,:].T, title='MC V_Prime ({} epochs)'.format(mc_epoch), save_file='3Dplot.png')
 
     # Print Sarsa(0) learning curve graph
     grapher(mses, x_label='Iteration', y_label='MSE', save_file='mse.png')
 
     # Output checkQ file
-    check_Q(Q_mc[1:,:-1,:])
+    print(Q_mc)
+    check_Q(Q_mc[1:,:,:])
