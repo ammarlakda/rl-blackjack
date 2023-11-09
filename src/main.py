@@ -1,5 +1,5 @@
 from env import BlackjackEnv
-from utils.grapher import grapher, grapher3d
+import utils
 import agent
 import numpy as np
 
@@ -30,10 +30,10 @@ if __name__ == '__main__':
     Q_td, mses = agent.sarsa(td_epoch, Q_mc)
 
     # Print 3D value function graph
-    grapher3d(V_prime[1:,:].T, title='MC V_Prime ({} epochs)'.format(mc_epoch), save_file='3Dplot.png')
+    utils.grapher3d(V_prime[1:,:].T, title='MC V_Prime ({} epochs)'.format(mc_epoch), save_file='3Dplot.png')
 
     # Print Sarsa(0) learning curve graph
-    grapher(mses, x_label='Iteration', y_label='MSE', save_file='mse.png')
+    utils.grapher(mses, x_label='Iteration', y_label='MSE', save_file='mse.png')
 
     # Output checkQ file
     print(Q_mc)
